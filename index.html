@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD Películas - CineFlix</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- HEADER/NAVBAR -->
+    <nav class="navbar navbar-dark bg-dark sticky-top">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1"><i class="bi bi-film"></i> CineFlix</span>
+            <div class="d-flex gap-2">
+                <button id="btnAgregar" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalPelicula" style="display: none;">
+                    <i class="bi bi-plus-circle"></i> Agregar Película
+                </button>
+                <button id="btnLogout" class="btn btn-danger" style="display: none;">
+                    <i class="bi bi-box-arrow-right"></i> Logout
+                </button>
+                <button id="btnLogin" class="btn btn-primary">
+                    <i class="bi bi-box-arrow-in-right"></i> Login
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- SECCIÓN PRINCIPAL DE PELÍCULAS -->
+    <section id="mainContent" class="container-fluid">
+        <!-- BUSCADOR Y FILTROS -->
+        <div class="container mt-5">
+            <div class="card search-filter-card mb-4">
+                <div class="card-body">
+                    <h5 class="card-title"><i class="bi bi-search"></i> Buscar y Filtrar Películas</h5>
+                    <div class="row g-3">
+                        <!-- BUSCADOR -->
+                        <div class="col-md-6">
+                            <input type="text" id="inputBuscar" class="form-control" placeholder="🔍 Buscar por título, director o sinopsis...">
+                        </div>
+                        
+                        <!-- FILTRO POR GÉNERO -->
+                        <div class="col-md-3">
+                            <select id="selectGenero" class="form-select">
+                                <option value="">📽️ Todos los Géneros</option>
+                            </select>
+                        </div>
+                        
+                        <!-- FILTRO POR AÑO -->
+                        <div class="col-md-2">
+                            <select id="selectAño" class="form-select">
+                                <option value="">📅 Todos los Años</option>
+                            </select>
+                        </div>
+
+                        <!-- BOTÓN RESET -->
+                        <div class="col-md-1 d-flex align-items-end">
+                            <button id="btnResetFiltros" class="btn btn-outline-secondary w-100">
+                                <i class="bi bi-arrow-clockwise"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTENEDOR DE PELÍCULAS -->
+        <div class="container">
+            <div id="containerPeliculas" class="row"></div>
+        </div>
+    </section>
+
+    <!-- MODAL PARA AGREGAR/EDITAR PELÍCULAS -->
+    <div class="modal fade" id="modalPelicula" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="lblTitleModal">➕ Agregar Nueva Película</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formPelicula">
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="inputTitulo" class="form-label">Título de la Película</label>
+                                <input type="text" class="form-control" id="inputTitulo" placeholder="Ingrese el título" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="inputAño" class="form-label">Año</label>
+                                <input type="number" class="form-control" id="inputAño" placeholder="2024" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="inputDuracion" class="form-label">Duración (minutos)</label>
+                                <input type="number" class="form-control" id="inputDuracion" placeholder="120" required>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="inputGenero" class="form-label">Género</label>
+                                <input type="text" class="form-control" id="inputGenero" placeholder="Ej: Ciencia Ficción, Drama..." required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="inputDirector" class="form-label">Director</label>
+                                <input type="text" class="form-control" id="inputDirector" placeholder="Nombre del director" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inputSinopsis" class="form-label">Sinopsis</label>
+                            <textarea class="form-control" id="inputSinopsis" rows="3" placeholder="Descripción de la película" required></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="inputImagen" class="form-label">URL de la Imagen</label>
+                            <input type="url" class="form-control" id="inputImagen" placeholder="https://ejemplo.com/imagen.jpg">
+                            <small class="text-muted">Dejar en blanco para usar imagen por defecto</small>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg" id="btnSubmitForm">
+                                <i class="bi bi-check-circle"></i> Guardar Película
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN DE LOGIN Y REGISTRO -->
+    <section id="loginSection" class="login-container">
+        <div class="login-card">
+            <h2 class="text-center mb-4"><i class="bi bi-film"></i> Cineflix</h2>
+            
+            <!-- TABS PARA LOGIN/REGISTRO -->
+            <ul class="nav nav-tabs mb-4" id="authTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
+                        <i class="bi bi-box-arrow-in-right"></i> Login
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="registro-tab" data-bs-toggle="tab" data-bs-target="#registro" type="button" role="tab">
+                        <i class="bi bi-person-plus"></i> Registro
+                    </button>
+                </li>
+            </ul>
+
+            <!-- CONTENIDO DE TABS -->
+            <div class="tab-content">
+                <!-- TAB LOGIN -->
+                <div class="tab-pane fade show active" id="login" role="tabpanel">
+                    <form id="formLogin">
+                        <div class="mb-3">
+                            <label for="inputUser" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="inputUser" placeholder="Ingrese usuario" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="inputPassword" placeholder="Ingrese contraseña" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                        <small class="d-block text-muted mt-3">
+                            Usuarios de prueba: admin/admin123, usuario/1234, demo/demo
+                        </small>
+                    </form>
+                </div>
+
+                <!-- TAB REGISTRO -->
+                <div class="tab-pane fade" id="registro" role="tabpanel">
+                    <form id="formRegistro">
+                        <div class="mb-3">
+                            <label for="inputNombre" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="inputNombre" placeholder="Tu nombre completo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="inputEmail" placeholder="tu@email.com" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputUserReg" class="form-label">Usuario</label>
+                            <input type="text" class="form-control" id="inputUserReg" placeholder="Nombre de usuario único" required>
+                            <small class="text-muted">Mínimo 4 caracteres</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputPasswordReg" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="inputPasswordReg" placeholder="Mínimo 6 caracteres" required>
+                            <small class="text-muted">Debe tener al menos 6 caracteres</small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="inputConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                            <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirma tu contraseña" required>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Crear Cuenta</button>
+                        <small class="d-block text-muted mt-3 text-center">
+                            ¿Ya tienes cuenta? <a href="#" id="linkLogin" class="text-decoration-none">Vuelve al Login</a>
+                        </small>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECCIÓN DE LOGIN Y REGISTRO -->
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
